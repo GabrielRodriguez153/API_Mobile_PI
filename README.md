@@ -117,25 +117,6 @@ npm run dev
 
 ---
 
-## 📡 Endpoints Principais
-
-| Método | Rota                 | Descrição                              | Protegido |
-| ------ | -------------------- | -------------------------------------- | --------- |
-| POST   | `/api/auth/register` | Registro de usuário                    | Não       |
-| POST   | `/api/auth/login`    | Login (username/email + senha)         | Não       |
-| GET    | `/api/properties`    | Lista propriedades do usuário          | Sim       |
-| POST   | `/api/properties`    | Cria nova propriedade                  | Sim       |
-| GET    | `/api/detections`    | Lista detecções por propriedade        | Sim       |
-| POST   | `/api/detections`    | Registra nova detecção (umidade/saúde) | Sim       |
-
-Para rotas protegidas, envie header:
-
-```
-Authorization: Bearer <seu_token_jwt>
-```
-
----
-
 ## 🎨 Fluxos de Tela (UI)
 
 | Tela                          | Funcionalidades Principais                                                                  |
