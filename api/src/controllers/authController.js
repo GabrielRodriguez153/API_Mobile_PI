@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
     cb(null, `profile_${req.userId || Date.now()}${ext}`);
   }
 });
-export const uploadImage = multer({ storage }).single('profileImage');
+export const uploadImages = multer({ storage }).single('profileImage');
 
 async function validateAddress(address) {
   if (typeof address !== 'object' || !address.text || !address.location) return false;
@@ -52,8 +52,9 @@ export async function signIn(req, res){
     const user = await User.findOne({
       $or: [{email: login}, {username: login}]
     });
-    if (!user || !await bcrypt.compare(password, user.password))
-        return res.status(401).json({ error: 'Credenciais Inválidas!'});
+    if (!user) return res.status(404).json({ error: "Usuário não encontrado" });
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) return res.status(401).json({ error: "Credenciais Inválidas" });
 
     const token = jwt.sign({ userId: user._id}, process.env.JWT_SECRET, {expiresIn: '2h'});
     return res.json({ token, profileImage: user.profileImage });

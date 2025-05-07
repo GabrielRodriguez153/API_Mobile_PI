@@ -17,6 +17,7 @@ const UserSchema = new mongoose.Schema(
     profileImage: {
       type: String,
     },
+    selectedFarm: {type: mongoose.Schema.Types.ObjectId, ref: "Farm" }
   },
   { timestamps: true }
 );

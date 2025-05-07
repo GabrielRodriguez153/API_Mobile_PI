@@ -1,15 +1,23 @@
 import User from '../models/User.js';
 
-export const getProfile = (req, res, next) => {
-  res.json(req.user);
+export const getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
-export const updateProfile = async (req, res, next) => {
-  try{
+export const updateProfile = async (req, res) => {
+  try {
     const updates = req.body;
-    const user = await User.findByIdAndUpdate(req.user._id, updates, {new: true});
+    if (updates.password) delete updates.password; 
+    const user = await User.findByIdAndUpdate(req.userId, updates, { new: true });
     res.json(user);
-  } catch (err) { next(err); }
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 };
 
 export const updateImage = async (req, res, next) => {
@@ -18,4 +26,17 @@ export const updateImage = async (req, res, next) => {
     const user = await User.findByIdAndUpdate(req.user._id, {profileImage: path}, {new: true});
     res.json(user);
   } catch(err) { next(err); }
+};
+
+export const selectFarm = async (req, res) => {
+  try{
+    const user = await User.findByIdAndDelete(
+      req.userId,
+      { selectedFarm: req.body.farmId },
+      { new: true}
+    );
+    res.json(user);
+  } catch(err){
+    res.status(500).json({ error: err.message });
+  }
 };
