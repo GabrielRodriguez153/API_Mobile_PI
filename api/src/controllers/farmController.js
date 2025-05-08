@@ -1,7 +1,8 @@
 import Farm from '../models/Farm.js';
 
 export const createFarm = async (req, res) => {
-  const farm = await Farm.create(req.body);
+  const data = { ...req.body, owner: req.userId };
+  const farm = await Farm.create(data);
   res.status(201).json(farm);
 };
 

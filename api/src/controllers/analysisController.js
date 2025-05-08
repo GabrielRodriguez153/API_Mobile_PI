@@ -23,3 +23,17 @@ export const getComparison = async (req, res) => {
   ));
   res.json(results);
 };
+
+export const getSummary = async (req, res) => {
+  const { farmId } = req.query;
+  const analyses = await Analysis.find({ farm: farmId });
+  const total = analyses.length;
+  const infected = analyses.reduce((s,a)=>s+a.infectedCount,0);
+  const healthy = analyses.reduce((s,a)=>s+a.healthyCount,0);
+  const byDay = await Analysis.aggregate([
+    { $match: { farm: farmId } },
+    { $group: { _id: '$date', count: { $sum: 1 } } },
+    { $sort: { _id: 1 } }
+  ]);
+  res.json({ total, infected, healthy, byDay });
+};

@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { getDashboard, getComparison } from "../controllers/analysisController";
-import auth from "../middlewares/auth.js";
+import { getDashboard, getComparison, getSummary } from "../controllers/analysisController.js";
+import { auth } from "../middlewares/auth.js";
 
 const router = Router();
 
 router.use(auth);
-router.get("/analysis/dashboard", getDashboard);
-router.post("/analysis/compare", getComparison);
+router.get("/dashboard", getDashboard);
+router.post("/compare", getComparison);
+router.get("/summary", getSummary);
 
 export default router;

@@ -30,7 +30,7 @@ export const updateImage = async (req, res, next) => {
 
 export const selectFarm = async (req, res) => {
   try{
-    const user = await User.findByIdAndDelete(
+    const user = await User.findByIdAndUpdate(
       req.userId,
       { selectedFarm: req.body.farmId },
       { new: true}

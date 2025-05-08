@@ -15,6 +15,14 @@ const storage = multer.diskStorage({
 });
 export const uploadImages = multer({ storage }).single('profileImage');
 
+function generateToken(userId) {
+  return jwt.sign(
+    { userId },
+    process.env.JWT_SECRET,
+    { expiresIn: '2h' }
+  );
+}
+
 async function validateAddress(address) {
   if (typeof address !== 'object' || !address.text || !address.location) return false;
   if (address.text.length < 10) return false;
@@ -22,43 +30,58 @@ async function validateAddress(address) {
 }
 
 export async function signUp(req, res) {
-  try{
-    const { username, email, phone, address, password, confirmPassword, socialProviders } = req.body;
-    
+  try {
+    const { username, email, phone, address, password, confirmPassword } = req.body;
     if (password !== confirmPassword)
-      return res.status(400).json({ error: 'Senhas não Coincidem'});
-
+      return res.status(400).json({ error: 'Senhas não coincidem' });
     if (!await validateAddress(address))
-      return res.status(400).json({ error: 'Endereço Inválido!'});
+      return res.status(400).json({ error: 'Endereço inválido!' });
 
-    const convertHash = await bcrypt.hash(password, 10);
-    const userDados = { username, email, phone, address, password: convertHash};
-    if(socialProviders) userDados.socialProviders = socialProviders;
-    if(req.file) userDados.profileImage = `/uploads/${req.file.filename}`;
+    const hashed = await bcrypt.hash(password, 10);
+    const userData = { username, email, phone, address, password: hashed };
+    if (req.file) userData.profileImage = `/uploads/${req.file.filename}`;
 
-    const user = await User.create(userDados);
-    return res.status(201).json({ id: user._id, username: user.username, profileImage: user.profileImage});
-  } catch(err) {
+    const user = await User.create(userData);
+
+    const token = generateToken(user._id);
+    return res.status(201).json({
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        profileImage: user.profileImage || null
+      }
+    });
+  } catch (err) {
     if (err.code === 11000)
-      return res.status(409).json({ error: 'Usuário ou Email já cadastrados!'});
-    return res.status(500).json({ error: err.message});
+      return res.status(409).json({ error: 'Usuário ou email já cadastrados!' });
+    return res.status(500).json({ error: err.message });
   }
 }
 
-export async function signIn(req, res){
-  try{
+export async function signIn(req, res) {
+  try {
     const { login, password } = req.body;
-
     const user = await User.findOne({
-      $or: [{email: login}, {username: login}]
+      $or: [{ email: login }, { username: login }]
     });
-    if (!user) return res.status(404).json({ error: "Usuário não encontrado" });
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) return res.status(401).json({ error: "Credenciais Inválidas" });
+    if (!user)
+      return res.status(404).json({ error: 'Usuário não encontrado' });
 
-    const token = jwt.sign({ userId: user._id}, process.env.JWT_SECRET, {expiresIn: '2h'});
-    return res.json({ token, profileImage: user.profileImage });
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid)
+      return res.status(401).json({ error: 'Credenciais inválidas' });
+
+    const token = generateToken(user._id);
+    return res.json({
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        profileImage: user.profileImage || null
+      }
+    });
   } catch (err) {
-    return res.status(500).json({ error: err.message});
+    return res.status(500).json({ error: err.message });
   }
 }
