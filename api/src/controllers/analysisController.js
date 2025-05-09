@@ -1,11 +1,13 @@
-import Analysis from '../models/Analysis.js';
-import mongoose from 'mongoose';
+import Analysis from "../models/Analysis.js";
+import mongoose from "mongoose";
 
 export const createAnalyses = async (req, res) => {
   try {
-    const data = req.body; 
+    const data = req.body;
     const result = await Analysis.insertMany(data);
-    res.status(201).json({ message: "Dados inseridos com sucesso!", inserted: result });
+    res
+      .status(201)
+      .json({ message: "Dados inseridos com sucesso!", inserted: result });
   } catch (error) {
     res.status(500).json({ message: "Erro ao inserir dados", error });
   }
@@ -16,7 +18,9 @@ export const getDashboard = async (req, res) => {
     const { farmId, from, to } = req.query;
 
     if (!farmId) {
-      return res.status(400).json({ message: "Parâmetro 'farmId' é obrigatório." });
+      return res
+        .status(400)
+        .json({ message: "Parâmetro 'farmId' é obrigatório." });
     }
 
     const filter = { farmId };
@@ -36,46 +40,53 @@ export const getDashboard = async (req, res) => {
   }
 };
 
-
 export const getComparison = async (req, res) => {
-  const { farms } = req.body; 
+  const { farms } = req.body;
   try {
     if (!farms || farms.length === 0) {
       return res.status(400).json({ message: "Nenhuma fazenda fornecida." });
     }
 
-    
-    const results = await Promise.all(farms.map(farmId =>
-      Analysis.aggregate([
-        { $match: { farmId: new mongoose.Types.ObjectId(farmId) } },  
-        { $group: { _id: null, avgIndex: { $avg: "$index" } } }
-      ])
-    ));
+    const results = await Promise.all(
+      farms.map((farmId) =>
+        Analysis.aggregate([
+          { $match: { farmId: new mongoose.Types.ObjectId(farmId) } },
+          { $group: { _id: null, avgIndex: { $avg: "$index" } } },
+        ])
+      )
+    );
 
-    res.json(results); 
+    res.json(results);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Erro ao processar a comparação das fazendas.", error });
+    res
+      .status(500)
+      .json({ message: "Erro ao processar a comparação das fazendas.", error });
   }
 };
 
 export const getSummary = async (req, res) => {
   const { farmId } = req.query;
-  const analyses = await Analysis.find({ farmId });
+  const objectFarmId = new mongoose.Types.ObjectId(farmId);
+
+  const analyses = await Analysis.find({ farmId: objectFarmId });
+
   const total = analyses.length;
-  const infected = analyses.reduce((s,a)=>s+a.infectedCount,0);
-  const healthy = analyses.reduce((s,a)=>s+a.healthyCount,0);
+  const infected = analyses.reduce((s, a) => s + a.infectedCount, 0);
+  const healthy = analyses.reduce((s, a) => s + a.healthyCount, 0);
+
   const byDay = await Analysis.aggregate([
-    { $match: { farmId } },
+    { $match: { farmId: objectFarmId } },
     {
       $addFields: {
         day: {
-          $dateToString: { format: "%Y-%m-%d", date: "$date" }  
-        }
-      }
+          $dateToString: { format: "%d-%m-%Y", date: "$date" },
+        },
+      },
     },
-    { $group: { _id: "$day", count: { $sum: 1 } } }, 
-    { $sort: { _id: 1 } }
+    { $group: { _id: "$day", count: { $sum: 1 } } },
+    { $sort: { _id: 1 } },
   ]);
+
   res.json({ total, infected, healthy, byDay });
 };

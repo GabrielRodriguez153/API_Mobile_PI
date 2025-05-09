@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { getFAQs, askFAQ } from "../controllers/faqController.js";
+import { getFAQs, askFAQ, createFAQ } from "../controllers/faqController.js";
 import { auth } from "../middlewares/auth.js";
 
 const router = Router();
 
 router.use(auth);
 router.get("/faqs", getFAQs);
-router.post("/faqs/ask", askFAQ);
+router.post("/ask", askFAQ);
+router.post("/create", createFAQ);
 
 export default router;
