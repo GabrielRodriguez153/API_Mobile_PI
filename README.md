@@ -28,7 +28,6 @@ Uma API RESTful moderna para o sistema **AntraVision**, que monitora a saúde de
 1. **Autenticação**
    * Registro de usuário com validação de endereço.
    * Login por username ou e‑mail.
-   * Login social (Twitter, Facebook, Google) – stubs para futuras integrações.
 
 2. **Gerenciamento de Propriedades**
    * Cadastro e listagem de fazendas vinculadas ao usuário.
