@@ -5,10 +5,10 @@ import { auth } from "../middlewares/auth.js";
 const router = Router();
 
 router.use(auth);
-router.post("/", createFarm);
+router.post("/create", createFarm);
 router.get("/", getFarms);
-router.get("/:id", getFarmById);
-router.put("/:id", updateFarm);
-router.delete("/:id", deleteFarm);
+router.get("/farm/:id", getFarmById);
+router.put("/farm/:id", updateFarm);
+router.delete("/farm/:id", deleteFarm);
 
 export default router;

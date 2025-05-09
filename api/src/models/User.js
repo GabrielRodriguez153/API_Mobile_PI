@@ -12,20 +12,11 @@ const UserSchema = new mongoose.Schema(
     selectedFarm: {type: mongoose.Schema.Types.ObjectId, ref: "Farm" },
     address: {
       text: String,
-      location: {
-        type: { type: String, enum: ["Point"], default: "Point" },
-        coordinates: { type: [Number], required: true }
-      }
+      lat: Number,
+      lng: Number,
     }
   },
   { timestamps: true }
 );
-
-UserSchema.pre('save', function(next) {
-  if (this.address?.location && !this.address.location.type) {
-    this.address.location.type = "Point";
-  }
-  next();
-});
 
 export default mongoose.model("User", UserSchema);

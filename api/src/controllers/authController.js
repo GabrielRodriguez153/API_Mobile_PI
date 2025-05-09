@@ -24,7 +24,13 @@ function generateToken(userId) {
 }
 
 async function validateAddress(address) {
-  if (typeof address !== 'object' || !address.text || !address.location) return false;
+  if (
+    typeof address !== 'object' || 
+    !address.text || 
+    typeof address.lat !== 'number' || 
+    typeof address.lng !== 'number'
+  ) return false;
+  
   if (address.text.length < 10) return false;
   return true;
 }

@@ -6,8 +6,8 @@ import { uploadImages } from "../controllers/authController.js";
 const router = Router();
 
 router.use(auth);
-router.get("/profile", getProfile);
-router.put("/profile", updateProfile);
+router.get("/profile/:id", getProfile);
+router.put("/profile/:id", updateProfile);
 router.patch("/profile/avatar", updateImage, uploadImages);
 router.patch("/select-farm", selectFarm);
 

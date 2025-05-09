@@ -14,7 +14,7 @@ app.use('/public', express.static('public'));
 
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
-app.use('/farm', farmRoutes);
+app.use('/farms', farmRoutes);
 app.use('/analysis', analysisRoutes);
 app.use('/occurrence', occurrenceRoutes);
 app.use('/faq', faqRoutes);

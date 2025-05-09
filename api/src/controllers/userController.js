@@ -1,19 +1,15 @@
 import User from '../models/User.js';
 
 export const getProfile = async (req, res) => {
-  try {
-    const user = await User.findById(req.userId);
+    const user = await User.findById(req.params.id);
     res.json(user);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 };
 
 export const updateProfile = async (req, res) => {
   try {
     const updates = req.body;
     if (updates.password) delete updates.password; 
-    const user = await User.findByIdAndUpdate(req.userId, updates, { new: true });
+    const user = await User.findByIdAndUpdate(req.params.id, updates, { new: true });
     res.json(user);
   } catch (err) {
     res.status(400).json({ error: err.message });

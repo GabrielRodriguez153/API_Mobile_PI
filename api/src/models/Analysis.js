@@ -6,7 +6,8 @@ const AnalysisSchema = new mongoose.Schema({
   humidity: { type: Number, required: true },
   infectedCount: { type: Number, required: true }, 
   healthyCount: { type: Number, required: true }, 
-  rejectedCount: { type: Number, required: true, default: 0 }
+  rejectedCount: { type: Number, required: true, default: 0 },
+  index: { type: Number, required: true }
 }, { timestamps: true });
 
 export default mongoose.model("Analysis", AnalysisSchema);
