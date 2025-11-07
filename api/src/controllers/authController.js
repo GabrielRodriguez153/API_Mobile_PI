@@ -23,25 +23,12 @@ function generateToken(userId) {
   );
 }
 
-async function validateAddress(address) {
-  if (
-    typeof address !== 'object' || 
-    !address.text || 
-    typeof address.lat !== 'number' || 
-    typeof address.lng !== 'number'
-  ) return false;
-  
-  if (address.text.length < 10) return false;
-  return true;
-}
 
 export async function signUp(req, res) {
   try {
     const { username, email, phone, address, password, confirmPassword } = req.body;
     if (password !== confirmPassword)
       return res.status(400).json({ error: 'Senhas não coincidem' });
-    if (!await validateAddress(address))
-      return res.status(400).json({ error: 'Endereço inválido!' });
 
     const hashed = await bcrypt.hash(password, 10);
     const userData = { username, email, phone, address, password: hashed };
