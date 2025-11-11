@@ -6,7 +6,7 @@ import analysisRoutes from "./routes/analysis.js";
 import occurrenceRoutes from "./routes/occurrence.js";
 import faqRoutes from "./routes/faq.js";
 import sectorStatsRoutes from "./routes/sectorstats.js";
-import mobileAnalysisRoutes from "./routes/mobile.js";
+import iaRoutes from "./routes/ia.js";
 
 const app = express();
 app.use(express.json());
@@ -19,7 +19,7 @@ app.use("/analysis", analysisRoutes);
 app.use("/occurrence", occurrenceRoutes);
 app.use("/faq", faqRoutes);
 app.use("/sector-stats", sectorStatsRoutes);
-app.use("/mobile", mobileAnalysisRoutes);
+app.use("/ia", iaRoutes);
 
 app.get("/", (req, res) => res.send("API está no Ar!"));
 

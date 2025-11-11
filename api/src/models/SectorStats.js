@@ -34,4 +34,4 @@ const sectorStatsSchema = new mongoose.Schema({
 
 sectorStatsSchema.index({ farm: 1, sectorName: 1 });
 
-export default mongoose.model("SectorStats",sectorStatsSchema);
+export default mongoose.model("SectorStats", sectorStatsSchema);
