@@ -1,4 +1,4 @@
-import FAQ from '../models/FAQ.js';
+import FAQ from "../models/FAQ.js";
 
 export const getFAQs = async (req, res) => {
   const faqs = await FAQ.find();
@@ -7,7 +7,7 @@ export const getFAQs = async (req, res) => {
 
 export const askFAQ = async (req, res) => {
   const { question } = req.body;
-  const faq = await FAQ.findOne({ question: new RegExp(question, 'i') });
+  const faq = await FAQ.findOne({ question: new RegExp(question, "i") });
   res.json({ answer: faq ? faq.answer : "Desculpe, não encontrei resposta." });
 };
 
@@ -15,14 +15,17 @@ export const createFAQ = async (req, res) => {
   const { question, answer } = req.body;
 
   if (!question || !answer) {
-    return res.status(400).json({ message: "Pergunta e resposta são obrigatórias." });
   }
 
   try {
-    const existing = await FAQ.findOne({ question: new RegExp(`^${question}$`, 'i') });
+    const existing = await FAQ.findOne({
+      question: new RegExp(`^${question}$`, "i"),
+    });
 
     if (existing) {
-      return res.status(409).json({ message: "Essa pergunta já está cadastrada." });
+      return res
+        .status(409)
+        .json({ message: "Essa pergunta já está cadastrada." });
     }
 
     const newFAQ = new FAQ({ question, answer });

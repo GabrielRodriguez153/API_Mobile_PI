@@ -6,7 +6,8 @@ import {
 import { auth } from "../middlewares/auth.js";
 
 const router = express.Router();
-router.post("/analisar", auth, analisarPlanta);
-router.get("/historico/:farmId", auth, getAnalisesHistoricas);
+router.use(auth);
+router.post("/analisar", analisarPlanta);
+router.get("/historico/:farmId", getAnalisesHistoricas);
 
 export default router;
